@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ReqCheck"
+version = "0.1.0"
+description = "ReqCheck - Software Requirements Checking"
+authors = [
+  {name = "Glaucia Schnoeller"},
+]
+
+requires-python = ">=3.8"
+
+dependencies = [
+  "Django>=4.2",
+  "psycopg[binary]",
+  "pgvector",
+  "python-decouple",
+  "gunicorn",
+  "djangorestframework",
+  "PyPDF2"
+]
+
+[tool.setuptools]
+package-dir = {"" = "rag_engine"}
+
+[tool.setuptools.packages.find]
+where = ["rag_engine"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.flake8]
+max-line-length = 100

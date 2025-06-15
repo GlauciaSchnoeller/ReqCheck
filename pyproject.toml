@@ -19,7 +19,11 @@ dependencies = [
   "python-decouple",
   "gunicorn",
   "djangorestframework",
-  "PyPDF2"
+  "PyPDF2",
+  "langchain",
+  "langchain-community",
+  "unstructured[all-docs]",
+  "sentence-transformers",
 ]
 
 [tool.setuptools]

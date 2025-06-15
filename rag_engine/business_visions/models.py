@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from pgvector.django import VectorField
 from PyPDF2 import PdfReader
 
 
@@ -18,3 +19,9 @@ def validate_pdf(fileobj):
 class BusinessVisions(models.Model):
     pdf = models.FileField(upload_to="documents_pdf", validators=[validate_pdf])
     create_date = models.DateTimeField(auto_now_add=True)
+
+
+class PDFChunk(models.Model):
+    file = models.FileField(upload_to="media/")
+    chunk_text = models.TextField()
+    embedding = VectorField(dimensions=384)

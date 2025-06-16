@@ -3,14 +3,14 @@ from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 
-from .models import BusinessVisions
+from .models import BusinessVision
 from .process_pdf import process_pdf_and_store
-from .serializers import BusinessVisionsSerializer
+from .serializers import BusinessVisionSerializer
 
 
-class BusinessVisionsViewSet(viewsets.ModelViewSet):
-    queryset = BusinessVisions.objects.all().order_by("-create_date")
-    serializer_class = BusinessVisionsSerializer
+class BusinessVisionViewSet(viewsets.ModelViewSet):
+    queryset = BusinessVision.objects.all().order_by("-create_date")
+    serializer_class = BusinessVisionSerializer
     parser_classes = [MultiPartParser]
 
     @action(detail=False, methods=["post"], url_path="upload")

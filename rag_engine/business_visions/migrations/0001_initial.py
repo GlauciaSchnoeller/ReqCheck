@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="BusinessVisions",
+            name="BusinessVision",
             fields=[
                 (
                     "id",
@@ -24,6 +24,14 @@ class Migration(migrations.Migration):
                     "pdf",
                     models.FileField(
                         upload_to="documents_pdf", validators=[business_visions.models.validate_pdf]
+                    ),
+                ),
+                (
+                    "project",
+                    models.ForeignKey(
+                        to="projects.Project",
+                        on_delete=models.CASCADE,
+                        related_name="business_visions",
                     ),
                 ),
                 ("create_date", models.DateTimeField(auto_now_add=True)),

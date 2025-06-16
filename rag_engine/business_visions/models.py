@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from pgvector.django import VectorField
+from projects.models import Project
 from PyPDF2 import PdfReader
 
 
@@ -16,8 +17,9 @@ def validate_pdf(fileobj):
         raise ValidationError("Uploaded file is not a valid PDF.")
 
 
-class BusinessVisions(models.Model):
+class BusinessVision(models.Model):
     pdf = models.FileField(upload_to="documents_pdf", validators=[validate_pdf])
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="business_visions")
     create_date = models.DateTimeField(auto_now_add=True)
 
 

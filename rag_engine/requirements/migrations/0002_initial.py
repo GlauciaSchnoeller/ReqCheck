@@ -22,6 +22,14 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("text", models.TextField()),
+                (
+                    "project",
+                    models.ForeignKey(
+                        to="projects.Project",  # ou 'appname.Project'
+                        on_delete=models.CASCADE,
+                        related_name="requirements",
+                    ),
+                ),
                 ("create_date", models.DateTimeField(auto_now_add=True)),
             ],
         ),

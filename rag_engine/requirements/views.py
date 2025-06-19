@@ -15,5 +15,16 @@ class CsrfTokenView(View):
 
 
 class RequirementViewSet(viewsets.ModelViewSet):
-    queryset = Requirement.objects.all().order_by("-create_date")
     serializer_class = RequirementSerializer
+
+    def get_queryset(self):
+        queryset = Requirement.objects.all().order_by("-create_date")
+        req_id = self.request.query_params.get("id")
+        project = self.request.query_params.get("project")
+
+        if req_id is not None:
+            queryset = queryset.filter(id=req_id)
+        if project is not None:
+            queryset = queryset.filter(project=project)
+
+        return queryset

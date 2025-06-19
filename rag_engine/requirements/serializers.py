@@ -6,4 +6,4 @@ from .models import Requirement
 class RequirementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Requirement
-        fields = ["id", "text", "create_date"]
+        fields = ["id", "text", "project", "create_date"]

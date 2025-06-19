@@ -9,9 +9,20 @@ from .serializers import BusinessVisionSerializer
 
 
 class BusinessVisionViewSet(viewsets.ModelViewSet):
-    queryset = BusinessVision.objects.all().order_by("-create_date")
     serializer_class = BusinessVisionSerializer
     parser_classes = [MultiPartParser]
+
+    def get_queryset(self):
+        queryset = BusinessVision.objects.all().order_by("-create_date")
+        id = self.request.query_params.get("id")
+        project = self.request.query_params.get("project")
+
+        if id is not None:
+            queryset = queryset.filter(id=id)
+        if project is not None:
+            queryset = queryset.filter(project=project)
+
+        return queryset
 
     @action(detail=False, methods=["post"], url_path="upload")
     def upload_business_vision(self, request):

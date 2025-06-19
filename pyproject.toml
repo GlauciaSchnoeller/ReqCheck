@@ -24,6 +24,7 @@ dependencies = [
   "langchain-community",
   "unstructured[all-docs]",
   "sentence-transformers",
+  "langchain-huggingface"
 ]
 
 [tool.setuptools]

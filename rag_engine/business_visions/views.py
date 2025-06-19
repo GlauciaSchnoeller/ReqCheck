@@ -3,15 +3,26 @@ from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 
-from .models import BusinessVisions
+from .models import BusinessVision
 from .process_pdf import process_pdf_and_store
-from .serializers import BusinessVisionsSerializer
+from .serializers import BusinessVisionSerializer
 
 
-class BusinessVisionsViewSet(viewsets.ModelViewSet):
-    queryset = BusinessVisions.objects.all().order_by("-create_date")
-    serializer_class = BusinessVisionsSerializer
+class BusinessVisionViewSet(viewsets.ModelViewSet):
+    serializer_class = BusinessVisionSerializer
     parser_classes = [MultiPartParser]
+
+    def get_queryset(self):
+        queryset = BusinessVision.objects.all().order_by("-create_date")
+        id = self.request.query_params.get("id")
+        project = self.request.query_params.get("project")
+
+        if id is not None:
+            queryset = queryset.filter(id=id)
+        if project is not None:
+            queryset = queryset.filter(project=project)
+
+        return queryset
 
     @action(detail=False, methods=["post"], url_path="upload")
     def upload_business_vision(self, request):

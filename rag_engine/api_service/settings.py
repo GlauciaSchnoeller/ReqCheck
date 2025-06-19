@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "pgvector.django",
     "requirements",
     "business_visions",
+    "projects",
 ]
 
 MIDDLEWARE = [

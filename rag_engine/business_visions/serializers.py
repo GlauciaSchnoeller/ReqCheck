@@ -1,10 +1,10 @@
 from rest_framework import serializers
 
-from .models import BusinessVisions
+from .models import BusinessVision
 
 
-class BusinessVisionsSerializer(serializers.ModelSerializer):
+class BusinessVisionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = BusinessVisions
-        fields = ["id", "pdf", "create_date"]
+        model = BusinessVision
+        fields = ["id", "pdf", "project", "create_date"]
         read_only_fields = ["id", "create_date"]

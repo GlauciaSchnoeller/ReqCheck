@@ -1,5 +1,5 @@
 from django.contrib import admin
 
-from .models import BusinessVisions
+from .models import BusinessVision
 
-admin.site.register(BusinessVisions)
+admin.site.register(BusinessVision)

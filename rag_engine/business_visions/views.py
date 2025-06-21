@@ -30,7 +30,8 @@ class BusinessVisionViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             instance = serializer.instance
-            process_pdf_and_store(instance.file.path, instance.file)
+            process_pdf_and_store(instance.pdf.path, instance.pdf)
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

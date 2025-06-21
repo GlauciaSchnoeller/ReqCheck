@@ -21,7 +21,7 @@ def upload_pdf(project_id: int, pdf_file: dict):
 
     try:
         with open(pdf_file.name, "rb") as f:
-            url = f"{BACKEND_URL}/business-visions/"
+            url = f"{BACKEND_URL}/business-visions/upload/"
             response = requests.post(url, files={"pdf": f}, data={"project": project_id})
         if response.status_code == 201:
             return "✅ Upload successful."

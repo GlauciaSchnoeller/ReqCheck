@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import BusinessVision
+from rag_engine.business_visions.models import BusinessVision
 
 
 class BusinessVisionSerializer(serializers.ModelSerializer):

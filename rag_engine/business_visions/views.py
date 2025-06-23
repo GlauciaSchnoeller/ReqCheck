@@ -3,9 +3,9 @@ from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 
-from .models import BusinessVision
-from .process_pdf import process_pdf_and_store
-from .serializers import BusinessVisionSerializer
+from rag_engine.business_visions.models import BusinessVision
+from rag_engine.business_visions.process_pdf import process_pdf_and_store
+from rag_engine.business_visions.serializers import BusinessVisionSerializer
 
 
 class BusinessVisionViewSet(viewsets.ModelViewSet):

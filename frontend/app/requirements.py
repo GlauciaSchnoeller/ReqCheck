@@ -81,3 +81,54 @@ def update_requirement(project_id=None):
         options = [(r["text"], str(r["id"])) for r in data]
         return gr.update(choices=options)
     return gr.update(choices=[])
+
+
+def validate_requirement(project_name: str, requirement_text: str) -> str:
+    try:
+        response = requests.get(f"{BACKEND_URL}/api/requirements/?project_name={project_name}")
+        requirements = response.json()
+        matching = [r for r in requirements if r["text"] == requirement_text]
+
+        if not matching:
+            return "⚠️ Requisito não encontrado no projeto."
+
+        requirement_id = matching[0]["id"]
+
+        response = requests.post(
+            f"{BACKEND_URL}/requirements/validate/",
+            json={"project_id": matching[0]["project"], "requirement_id": requirement_id},
+            timeout=30,
+        )
+        if response.status_code == 200:
+            return response.json().get("validation_result", "⚠️ Nenhum resultado retornado.")
+        else:
+            return f"❌ Erro: {response.text}"
+    except Exception as e:
+        return f"🚨 Erro na validação: {str(e)}"
+
+
+def validate_all_requirements(project_name: str) -> str:
+    try:
+        response = requests.get(f"{BACKEND_URL}/api/projects/?name={project_name}")
+        projects = response.json()
+        if not projects:
+            return "⚠️ Projeto não encontrado."
+
+        project_id = projects[0]["id"]
+
+        response = requests.post(
+            f"{BACKEND_URL}/requirements/validate_all/", json={"project_id": project_id}, timeout=60
+        )
+
+        if response.status_code != 200:
+            return f"Erro: {response.text}"
+
+        result_list = response.json()
+        output = "📋 Validação de todos os requisitos:\n\n"
+        for item in result_list:
+            output += f"🔹 Requisito: {item['text']}\n{item['validation']}\n\n"
+
+        return output
+
+    except Exception as e:
+        return f"🚨 Erro ao validar requisitos: {str(e)}"

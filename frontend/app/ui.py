@@ -6,8 +6,14 @@ import gradio as gr
 from .business_visions import update_business_visions, upload_pdf
 from .config import STATIC_DIR
 from .projects import load_projects, save_project
-from .questions import ask_question
-from .requirements import add_requirement, delete_and_update, update_requirement
+from .questions import ask_question, ask_question_chat
+from .requirements import (
+    add_requirement,
+    delete_and_update,
+    update_requirement,
+    validate_all_requirements,
+    validate_requirement,
+)
 
 APP_TITLE = "ReqCheck - Requirements Checking"
 PORT = 7860
@@ -23,7 +29,6 @@ def get_header_html(logo_b64: str) -> str:
 
 
 def run_server():
-
     logo_path = os.path.join(STATIC_DIR, "logo.png")
     custom_css = os.path.join(STATIC_DIR, "custom.css")
 
@@ -33,12 +38,12 @@ def run_server():
         css = f.read()
 
     with gr.Blocks(title=APP_TITLE, css=css) as demo:
-
         gr.HTML(get_header_html(logo_b64))
 
         new_project_visible = gr.State(False)
         add_req_visible = gr.State(False)
         add_bv_visible = gr.State(False)
+        chatbot_state = gr.State([])
 
         with gr.Row(elem_id="main-row"):
             with gr.Column(scale=3, min_width=320, elem_id="sidebar"):
@@ -49,55 +54,75 @@ def run_server():
                 with gr.Column(visible=False, elem_id="new-project-section") as new_project_section:
                     project_name = gr.Textbox(label="Project Name")
                     project_description = gr.Textbox(label="Project Description", lines=2)
-                    save_project_btn = gr.Button("💾 Save Project")
+                    save_project_btn = gr.Button("📎 Save Project")
 
             with gr.Column(scale=7, min_width=600, elem_id="main-content"):
-                with gr.Tab("Project Details"):
+                with gr.Tabs():
+                    with gr.Tab("📜 Requirements"):
+                        with gr.Group(elem_classes="box"):
+                            gr.Markdown("### Requisitos")
 
-                    with gr.Group(elem_classes="box"):
-                        gr.Markdown("### 📝 Requirements")
+                            with gr.Column(visible=False) as add_req_section:
+                                input_text = gr.Textbox(label="New Requirement", lines=3)
+                                btn_save_req = gr.Button(
+                                    "Save Requirement", elem_classes="btn-save"
+                                )
 
-                        with gr.Column(visible=False) as add_req_section:
-                            input_text = gr.Textbox(label="New Requirement", lines=3)
-                            btn_save_req = gr.Button("Save Requirement", elem_classes="btn-save")
+                            requirements_list = gr.Radio(
+                                label="Existing Requirements", choices=[], type="value"
+                            )
 
-                        requirements_list = gr.Radio(
-                            label="Existing Requirements", choices=[], type="value"
+                            with gr.Row(elem_id="req-buttons-row"):
+                                btn_add_req = gr.Button("➕ Add Requirement")
+                                btn_validate_req = gr.Button("✅ Validate Requirement")
+                                btn_validate_all = gr.Button("✅ Validate All Requirements")
+
+                            edit_field = gr.Textbox(
+                                label="Edit Selected Requirement", visible=False
+                            )
+                            with gr.Row(visible=False) as edit_buttons_row:
+                                btn_edit_req = gr.Button("✏️ Edit")
+                                btn_save_edit = gr.Button("📎 Save Edit")
+                                btn_delete_req = gr.Button("🗑️ Delete")
+
+                            status_output_req = gr.Textbox(
+                                label="📢 Status / Result",
+                                lines=2,
+                                interactive=False,
+                                max_lines=20,
+                                show_copy_button=True,
+                            )
+
+                    with gr.Tab("📄 Business Vision"):
+                        with gr.Group(elem_classes="box"):
+                            gr.Markdown("### Visão de Negócio")
+
+                            with gr.Column(visible=False) as add_bv_section:
+                                pdf_file = gr.File(label="Upload PDF", file_types=[".pdf"])
+                                btn_process_pdf = gr.Button(
+                                    "📅 Process PDF", elem_classes="btn-save"
+                                )
+
+                            business_vision_list = gr.Radio(
+                                label="Existing Business Vision", choices=[], type="value"
+                            )
+
+                            btn_add_bv = gr.Button("➕ Add Business Vision")
+
+                            status_output_bv = gr.Textbox(
+                                label="📢 Status / Result",
+                                lines=2,
+                                interactive=False,
+                                max_lines=20,
+                                show_copy_button=True,
+                            )
+
+                    with gr.Tab("❓ Ask a Question"):
+                        chatbot = gr.Chatbot(label="💬 Chat", elem_id="chat-box")
+                        input_ask = gr.Textbox(
+                            placeholder="Digite sua pergunta...", show_label=False
                         )
-
-                        btn_add_req = gr.Button("➕ Add Requirement")
-
-                        edit_field = gr.Textbox(label="Edit Selected Requirement", visible=False)
-                        with gr.Row(visible=False) as edit_buttons_row:
-                            btn_edit_req = gr.Button("✏️ Edit")
-                            btn_save_edit = gr.Button("💾 Save Edit")
-                            btn_delete_req = gr.Button("🗑️ Delete")
-
-                    with gr.Group(elem_classes="box"):
-                        gr.Markdown("### 📄 Business Vision")
-
-                        with gr.Column(visible=False) as add_bv_section:
-                            pdf_file = gr.File(label="Upload PDF", file_types=[".pdf"])
-                            btn_process_pdf = gr.Button("📥 Process PDF", elem_classes="btn-save")
-
-                        business_vision_list = gr.Radio(
-                            label="Existing Business Vision", choices=[], type="value"
-                        )
-
-                        btn_add_bv = gr.Button("➕ Add Business Vision")
-
-                    status_output = gr.Textbox(
-                        label="📢 Status / Result",
-                        lines=3,
-                        interactive=False,
-                        max_lines=10,
-                        show_copy_button=True,
-                    )
-
-                with gr.Tab("❓ Ask a Question"):
-                    input_ask = gr.Textbox(label="Enter your question")
-                    btn_ask = gr.Button("Ask", elem_classes="btn-save")
-                    answer = gr.Textbox(label="Answer")
+                        btn_ask = gr.Button("Enviar", elem_classes="btn-save")
 
         def toggle_visible(current_visible):
             return gr.update(visible=not current_visible), not current_visible
@@ -135,20 +160,20 @@ def run_server():
         save_project_btn.click(
             fn=save_project,
             inputs=[project_name, project_description],
-            outputs=[status_output, project_dropdown, new_project_section],
+            outputs=[project_dropdown, new_project_section],
         )
 
         btn_save_req.click(
             fn=add_requirement,
             inputs=[project_dropdown, input_text],
-            outputs=[status_output, input_text],
+            outputs=[status_output_req, input_text],
         ).then(fn=update_requirement, inputs=[project_dropdown], outputs=[requirements_list])
 
         project_dropdown.change(
             fn=update_requirement, inputs=[project_dropdown], outputs=[requirements_list]
         )
         btn_process_pdf.click(
-            fn=upload_pdf, inputs=[project_dropdown, pdf_file], outputs=status_output
+            fn=upload_pdf, inputs=[project_dropdown, pdf_file], outputs=status_output_bv
         )
 
         requirements_list.change(
@@ -165,10 +190,28 @@ def run_server():
             outputs=[requirements_list],
         )
         btn_delete_req.click(
-            fn=handle_delete, inputs=[requirements_list], outputs=[status_output, requirements_list]
+            fn=handle_delete,
+            inputs=[requirements_list],
+            outputs=[status_output_req, requirements_list],
         )
 
-        btn_ask.click(fn=ask_question, inputs=input_ask, outputs=answer)
+        btn_validate_req.click(
+            fn=validate_requirement,
+            inputs=[project_dropdown, requirements_list],
+            outputs=[status_output_req],
+        )
+
+        btn_validate_all.click(
+            fn=validate_all_requirements, inputs=[project_dropdown], outputs=[status_output_req]
+        )
+
+        btn_ask.click(fn=ask_question, inputs=input_ask, outputs=None)
+
+        btn_ask.click(
+            fn=ask_question_chat,
+            inputs=[chatbot_state, input_ask],
+            outputs=[chatbot, input_ask, chatbot_state],
+        ).then(fn=lambda h: h, inputs=[chatbot], outputs=[chatbot_state])
 
     demo.launch(server_name="0.0.0.0", server_port=PORT)
 

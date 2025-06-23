@@ -1,6 +1,7 @@
 from django.db import models
 from pgvector.django import VectorField
-from projects.models import Project
+
+from rag_engine.projects.models import Project
 
 
 class Requirement(models.Model):

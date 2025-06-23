@@ -3,7 +3,6 @@ FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Instala dependências do sistema (incluindo OpenCV e PDF support)
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
@@ -14,20 +13,22 @@ RUN apt-get update && apt-get install -y \
     libsm6 \
     libxrender1 \
     libxext6 \
+    tesseract-ocr \
+    poppler-utils \
+    ghostscript \
+    python3-opencv \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 ENV PYTHONPATH="/app"
 
 COPY pyproject.toml ./
-COPY rag_engine/ rag_engine/
+COPY rag_engine /app/rag_engine
 COPY entrypoint.sh /entrypoint.sh
+
 RUN chmod +x /entrypoint.sh
 
-RUN pip install --upgrade pip \
-    && pip install .
-
-COPY . .
+RUN pip install --upgrade pip && pip install .
 
 EXPOSE 8000
 

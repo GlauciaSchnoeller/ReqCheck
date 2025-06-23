@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 
-from .models import Project
-from .serializers import ProjectSerializer
+from rag_engine.projects.models import Project
+from rag_engine.projects.serializers import ProjectSerializer
 
 
 class ProjectViewSet(viewsets.ModelViewSet):

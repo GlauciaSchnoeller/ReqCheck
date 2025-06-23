@@ -1,8 +1,9 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from pgvector.django import VectorField
-from projects.models import Project
 from PyPDF2 import PdfReader
+
+from rag_engine.projects.models import Project
 
 
 def validate_pdf(fileobj):

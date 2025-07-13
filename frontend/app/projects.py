@@ -28,6 +28,14 @@ def save_project(name, description):
     if response.status_code == 201:
         new_project_id = response.json()["id"]
         updated_dropdown = load_projects(selected_id=new_project_id)
-        return ("✅ Project saved!", updated_dropdown, gr.update(visible=False))
+        return (
+            updated_dropdown,
+            gr.update(visible=False),
+            gr.update(value="✅ Project saved!", visible=True),
+        )
     else:
-        return f"❌ Failed to save: {response.text}", gr.update(), gr.update()
+        return (
+            gr.update(),
+            gr.update(),
+            gr.update(value=f"❌ Failed to save: {response.text}", visible=True),
+        )

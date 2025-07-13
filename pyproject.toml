@@ -12,27 +12,18 @@ authors = [
 requires-python = ">=3.8"
 
 dependencies = [
-  # Backend
   "Django>=4.2",
   "gunicorn",
-
-  # Banco de dados
   "psycopg[binary]",
   "pgvector",
-
-  # API
   "djangorestframework",
   "python-decouple",
-
-  # LangChain / RAG
   "langchain",  # versão estável
   "langchain-community",
   "langchain-huggingface",
   "sentence-transformers",
   "unstructured[all-docs]",  # versão testada com LangChain
   "PyPDF2",
-
-  # Outras libs opcionais que podem ajudar
   "tqdm",
   "requests",
   "pydantic"  # garante compatibilidade com LangChain

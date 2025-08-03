@@ -4,6 +4,7 @@ import os
 
 import gradio as gr
 
+from .artifacts import get_artifacts, update_requirement_wrapped
 from .business_visions import upload_pdf
 from .config import STATIC_DIR
 from .projects import load_projects, save_project
@@ -12,7 +13,6 @@ from .requirements import (
     add_requirement,
     delete_and_update,
     edit_requirement,
-    update_requirement,
     validate_all_requirements,
     validate_requirement,
 )
@@ -38,13 +38,6 @@ async def hide_status_message():
 def toggle_visible_and_reset(current_visible):
     clear = "" if not current_visible else gr.update()
     return (gr.update(visible=not current_visible), not current_visible, clear, clear)
-
-
-def update_requirement_wrapped(project_id=None):
-    options, mapping = update_requirement(project_id)
-    options.insert(0, ("", None))
-
-    return gr.update(choices=options, value=None), mapping
 
 
 def toggle_visible(current_visible):
@@ -204,11 +197,7 @@ def run_server():
                         btn_ask = gr.Button("Enviar", elem_classes="btn-save")
 
         # events
-        demo.load(fn=load_projects, outputs=project_dropdown).then(
-            fn=update_requirement_wrapped,
-            inputs=[project_dropdown],
-            outputs=[requirements_list, requirement_map_state],
-        )
+        demo.load(fn=load_projects, outputs=project_dropdown)
 
         btn_add_project.click(
             fn=toggle_visible_and_reset,
@@ -249,9 +238,9 @@ def run_server():
         )
 
         project_dropdown.change(
-            fn=update_requirement_wrapped,
+            fn=get_artifacts,
             inputs=[project_dropdown],
-            outputs=[requirements_list, requirement_map_state],
+            outputs=[requirements_list, requirement_map_state, business_vision_list],
         )
 
         btn_process_pdf.click(

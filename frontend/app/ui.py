@@ -8,7 +8,7 @@ from .artifacts import get_artifacts, update_requirement_wrapped
 from .business_visions import upload_pdf
 from .config import STATIC_DIR
 from .projects import load_projects, save_project
-from .questions import ask_question, ask_question_chat
+from .questions import ask_question
 from .requirements import (
     add_requirement,
     delete_and_update,
@@ -91,6 +91,28 @@ def handle_delete(req_id, project_id):
     )
 
 
+def ask_question_and_update(chat_state, question, project_id):
+    answer = ask_question(question, project_id)
+    chat_state.append(("You", question))
+    chat_state.append(("AI", answer))
+    return chat_state, "", chat_state
+
+
+def format_validation_result(result):
+    if not result:
+        return "⚠️ No results returned."
+
+    if isinstance(result, list):
+        return "\n\n".join([format_validation_result(r) for r in result])
+
+    return (
+        f"**Consistency:** {result.get('consistency', 'Unknown')}\n"
+        f"**Completeness:** {result.get('completeness', 'Unknown')}\n"
+        f"**Ambiguity:** {result.get('ambiguity', 'Unknown')}\n\n"
+        f"**Notes:** {result.get('notes', 'No additional notes.')}"
+    )
+
+
 def run_server():
     logo_path = os.path.join(STATIC_DIR, "logo.png")
     custom_css = os.path.join(STATIC_DIR, "custom.css")
@@ -151,7 +173,9 @@ def run_server():
                                 btn_validate_all = gr.Button("✅ Validate All Requirements")
 
                             full_text_preview = gr.Textbox(
-                                label="Full Requirement", visible=False, interactive=False
+                                label="Full Requirement",
+                                visible=False,
+                                interactive=False,
                             )
 
                             edit_field = gr.Textbox(
@@ -166,7 +190,10 @@ def run_server():
                                 btn_delete_req = gr.Button("🗑️ Delete")
 
                             status_output_req = gr.Textbox(
-                                label="📢 Status / Result", lines=2, interactive=False, max_lines=20
+                                label="📢 Status / Result",
+                                lines=2,
+                                interactive=False,
+                                max_lines=20,
                             )
 
                     with gr.Tab("📄 Business Vision"):
@@ -180,13 +207,18 @@ def run_server():
                                 )
 
                             business_vision_list = gr.Radio(
-                                label="Existing Business Vision", choices=[], type="value"
+                                label="Existing Business Vision",
+                                choices=[],
+                                type="value",
                             )
 
                             btn_add_bv = gr.Button("➕ Add Business Vision")
 
                             status_output_bv = gr.Textbox(
-                                label="📢 Status / Result", lines=2, interactive=False, max_lines=20
+                                label="📢 Status / Result",
+                                lines=2,
+                                interactive=False,
+                                max_lines=20,
                             )
 
                     with gr.Tab("❓ Ask a Question"):
@@ -202,15 +234,24 @@ def run_server():
         btn_add_project.click(
             fn=toggle_visible_and_reset,
             inputs=[new_project_visible],
-            outputs=[new_project_section, new_project_visible, project_name, project_description],
+            outputs=[
+                new_project_section,
+                new_project_visible,
+                project_name,
+                project_description,
+            ],
         )
 
         btn_add_req.click(
-            fn=toggle_visible, inputs=add_req_visible, outputs=[add_req_section, add_req_visible]
+            fn=toggle_visible,
+            inputs=add_req_visible,
+            outputs=[add_req_section, add_req_visible],
         )
 
         btn_add_bv.click(
-            fn=toggle_visible, inputs=add_bv_visible, outputs=[add_bv_section, add_bv_visible]
+            fn=toggle_visible,
+            inputs=add_bv_visible,
+            outputs=[add_bv_section, add_bv_visible],
         )
 
         save_project_btn.click(
@@ -289,22 +330,22 @@ def run_server():
         ).then(fn=lambda: gr.update(value=None), inputs=[], outputs=[edit_field])
 
         btn_validate_req.click(
-            fn=validate_requirement,
-            inputs=[project_dropdown, requirements_list],
+            fn=lambda req_id, proj: format_validation_result(validate_requirement(req_id, proj)),
+            inputs=[requirements_list, project_dropdown],
             outputs=[status_output_req],
         )
 
         btn_validate_all.click(
-            fn=validate_all_requirements, inputs=[project_dropdown], outputs=[status_output_req]
+            fn=lambda proj: format_validation_result(validate_all_requirements(proj)),
+            inputs=[project_dropdown],
+            outputs=[status_output_req],
         )
 
-        btn_ask.click(fn=ask_question, inputs=input_ask, outputs=None)
-
         btn_ask.click(
-            fn=ask_question_chat,
-            inputs=[chatbot_state, input_ask],
+            fn=ask_question_and_update,
+            inputs=[chatbot_state, input_ask, project_dropdown],
             outputs=[chatbot, input_ask, chatbot_state],
-        ).then(fn=lambda h: h, inputs=[chatbot], outputs=[chatbot_state])
+        )
 
     demo.launch(server_name="0.0.0.0", server_port=PORT)
 

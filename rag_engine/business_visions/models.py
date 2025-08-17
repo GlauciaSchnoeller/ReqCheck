@@ -25,6 +25,13 @@ class BusinessVision(models.Model):
 
 
 class PDFChunk(models.Model):
+    business_vision = models.ForeignKey(
+        BusinessVision,
+        on_delete=models.CASCADE,
+        related_name="chunks",
+        null=True,
+        blank=True,
+    )
     file = models.FileField(upload_to="media/")
     chunk_text = models.TextField()
-    embedding = VectorField(dimensions=384)
+    embedding = VectorField(dimensions=384, null=True)

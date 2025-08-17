@@ -22,7 +22,9 @@ def load_projects(selected_id=None):
 def save_project(name, description):
     headers, session = get_header()
     response = session.post(
-        f"{BACKEND_URL}/projects/", json={"name": name, "description": description}, headers=headers
+        f"{BACKEND_URL}/projects/",
+        json={"name": name, "description": description},
+        headers=headers,
     )
 
     if response.status_code == 201:

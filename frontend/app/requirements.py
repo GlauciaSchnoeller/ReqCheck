@@ -83,21 +83,12 @@ def update_requirement(project_id=None):
     return [], {}
 
 
-def validate_requirement(project_name: str, requirement_text: str) -> str:
+def validate_requirement(requirement_id: str, requirement_text: str) -> str:
     try:
-        response = requests.get(f"{BACKEND_URL}/requirements/?project_name={project_name}")
-        requirements = response.json()
-        matching = [r for r in requirements if r["text"] == requirement_text]
-
-        if not matching:
-            return f"{dic_icons.get(WARNING)} Requirement not found in project."
-
-        requirement_id = matching[0]["id"]
-
         response = requests.post(
             f"{BACKEND_URL}/requirements/validate/",
-            json={"project_id": matching[0]["project"], "requirement_id": requirement_id},
-            timeout=30,
+            json={"requirement_id": requirement_id},
+            timeout=300,
         )
         if response.status_code == 200:
             return response.json().get("validation_result", "⚠️ No results returned.")
@@ -117,7 +108,9 @@ def validate_all_requirements(project_name: str) -> str:
         project_id = projects[0]["id"]
 
         response = requests.post(
-            f"{BACKEND_URL}/requirements/validate_all/", json={"project_id": project_id}, timeout=60
+            f"{BACKEND_URL}/requirements/validate_all/",
+            json={"project_id": project_id},
+            timeout=60,
         )
 
         if response.status_code != 200:

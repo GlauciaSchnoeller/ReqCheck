@@ -13,13 +13,15 @@ router.register(r"requirements", RequirementViewSet, basename="requirement")
 
 urlpatterns = [
     path("csrf-token/", CsrfTokenView.as_view(), name="csrf-token"),
-    path("", include(router.urls)),
     path(
-        "requirements/validate/", RequirementValidationView.as_view(), name="validate-requirement"
+        "requirements/validate/",
+        RequirementValidationView.as_view(),
+        name="validate-requirement",
     ),
     path(
         "requirements/validate_all/",
         BatchRequirementValidationView.as_view(),
         name="validate-all-requirements",
     ),
+    path("", include(router.urls)),
 ]

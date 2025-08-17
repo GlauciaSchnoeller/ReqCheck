@@ -1,3 +1,5 @@
+import json
+
 import requests
 from django.db.models import F
 from pgvector.django import CosineDistance
@@ -18,11 +20,29 @@ def find_similar_requirements(text, project_id, top_k=5):
     )
 
 
+def parse_validation_response(response_text):
+    try:
+        data = json.loads(response_text)
+        return {
+            "consistency": data.get("consistency", "Unknown"),
+            "completeness": data.get("completeness", "Unknown"),
+            "ambiguity": data.get("ambiguity", "Unknown"),
+            "notes": data.get("notes", ""),
+        }
+    except json.JSONDecodeError:
+        return {
+            "consistency": "Unknown",
+            "completeness": "Unknown",
+            "ambiguity": "Unknown",
+            "notes": f"Failed to parse model response: {response_text}",
+        }
+
+
 def validate_requirement_with_combined_rag(text, project_id, top_k=3):
     embedding = embed_requirement_text(text)
 
     business_chunks = (
-        PDFChunk.objects.filter(file__businessvision__project_id=project_id)
+        PDFChunk.objects.filter(business_vision__project_id=project_id)
         .annotate(distance=CosineDistance(F("embedding"), embedding))
         .order_by("distance")[:top_k]
     )
@@ -49,28 +69,37 @@ def validate_requirement_with_combined_rag(text, project_id, top_k=3):
         New Requirement:
         "{text}"
 
-        Respond with:
+        Respond **exactly** in the following JSON format, without any extra text:
 
-        Is it consistent?
-
-        Is it complete?
-
-        Is it clear (unambiguous)?
-
-        Respond with:
-        Consistency: [Yes/No]
-        Completeness: [Yes/No]
-        Ambiguity: [Yes/No]
-        Notes: [explanations if there are any issues]
+        {
+        "consistency": "Yes" or "No",
+        "completeness": "Yes" or "No",
+        "ambiguity": "Yes" or "No",
+        "notes": "Any explanatory text or empty string if none"
+        }
         """
 
     try:
         response = requests.post(
             f"{OLLAMA_URL}/api/generate",
-            json={"model": "llama3", "prompt": prompt, "stream": False},
-            timeout=30,
+            json={"model": "llama3", "prompt": prompt, "stream": True},
+            timeout=300,
+            stream=True,
         )
-        response.raise_for_status()
-        return response.json().get("response", "[Erro: answer not found]")
+
+        raw_response = ""
+        for line in response.iter_lines():
+            if line:
+                data = json.loads(line.decode("utf-8"))
+                if data.get("type") == "response":
+                    raw_response += data.get("response", "")
+
+        return parse_validation_response(raw_response)
+
     except requests.RequestException as e:
-        return f"[Error querying model: {e}]"
+        return {
+            "consistency": "Unknown",
+            "completeness": "Unknown",
+            "ambiguity": "Unknown",
+            "notes": f"Error querying model: {e}",
+        }

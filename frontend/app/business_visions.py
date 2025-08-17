@@ -38,7 +38,6 @@ def upload_pdf(project_id: int, pdf_file: dict):
 
 
 def update_business_visions(project_id=None):
-
     url = f"{BACKEND_URL}/business-visions/"
     if project_id:
         url += f"?project={project_id}"

@@ -24,6 +24,9 @@ services:
       - .env
     depends_on:
       - db
+      - ollama
+    environment:
+      - OLLAMA_URL=http://ollama:11434
 
   frontend:
     build:
@@ -33,7 +36,32 @@ services:
     depends_on:
       - web
 
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    restart: always
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    environment:
+      - OLLAMA_MODELS=/root/.ollama
+    deploy:
+      resources:
+        limits:
+          memory: 8g
+
+  ollama-init:
+    image: curlimages/curl
+    depends_on:
+      - ollama
+    entrypoint: >
+      sh -c "sleep 5 &&
+            curl -X POST http://ollama:11434/api/pull -d '{\"name\":\"llama3\"}'"
+
+
 volumes:
   pgdata:
   static_volume:
   media_volume:
+  ollama_models:

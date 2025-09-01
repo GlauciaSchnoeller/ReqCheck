@@ -1,5 +1,5 @@
 from django.contrib import admin
 
-from .models import Project
+from rag_engine.projects.models import Project
 
 admin.site.register(Project)

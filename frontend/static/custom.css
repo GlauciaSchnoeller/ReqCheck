@@ -1,231 +1,226 @@
 :root {
-    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
     --font-size-base: 16px;
-    --font-size-title: 1.2rem;
-    --font-size-subtitle: 1.2rem;
+    --font-size-title: 1.25rem;
+    --font-size-subtitle: 1.1rem;
     --font-size-text: 1rem;
     --font-size-button: 1rem;
+
+    --bg-color: #f7f7f8;
+    --card-bg: #ffffff;
+    --border-color: #e0e0e0;
+    --text-color: #202124;
+    --text-muted: #5f6368;
+
+    --button-bg: #e0e0e0;
+    --button-hover: #c6c6c6;
+    --button-text: #333333;
 }
 
 body, .gradio-container {
-    background-color: #ffffff;
-    color: #202124;
+    background-color: var(--bg-color);
+    color: var(--text-color);
     font-family: var(--font-family);
     font-size: var(--font-size-base);
     margin: 0;
     padding: 0;
     min-height: 100vh;
-    overflow-y: auto;
 }
 
 .header {
-    position: relative;
-    height: 100px;
+    height: 90px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #e0e0e0;
-    font-weight: 700;
+    background-color: var(--card-bg);
+    border-bottom: 1px solid var(--border-color);
     font-size: var(--font-size-title);
-    letter-spacing: 0.03em;
-    color: #000000;
+    font-weight: 600;
+    position: relative;
 }
 
 .header img {
     position: absolute;
     left: 30px;
-    width: 70px;
-    height: 70px;
+    width: 64px;
+    height: 64px;
     border-radius: 12px;
     border: 1px solid #ccc;
 }
 
-
 #main-row {
-    min-height: calc(100vh - 100px);
     display: flex;
     flex-wrap: wrap;
+    min-height: calc(100vh - 90px);
 }
+
 #sidebar {
-    background: #fafafa;
-    border-right: 1px solid #e0e0e0;
-    overflow-y: auto;
-    height: 100%;
+    background-color: var(--card-bg);
+    border-right: 1px solid var(--border-color);
     padding: 24px 20px;
-    min-width: 450px;
-    color: #202124;
+    min-width: 420px;
     display: flex;
     flex-direction: column;
     font-size: var(--font-size-text);
+
+    height: 100vh;
+    overflow-y: auto;
 }
 
 .sidebar-title {
-    font-weight: 700;
+    font-weight: 600;
     font-size: var(--font-size-subtitle);
     margin-bottom: 1rem;
 }
 
-#btn-add-project {
-    width: auto;
-    height: auto;
-    padding: 6px 14px;
-    font-size: 1rem;
-    border-radius: 6px;
-    background-color: transparent;
-    border: 1.5px solid #1a73e8;
-    color: #1a73e8;
-    cursor: pointer;
-    transition: background-color 0.15s ease, color 0.15s ease;
-    user-select: none;
-    font-weight: 600;
-    margin-top: 12px;
-}
-
-#btn-add-project:hover {
-    background-color: #1a73e8;
-    color: white;
-}
-
-#new-project-section {
-    margin-top: 12px;
-    gap: 12px;
-    flex-direction: column;
-}
-
-#new-project-section button {
-    align-self: flex-start;
-    padding: 8px 16px;
-    font-size: 1rem;
-    background-color: #1a73e8;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    user-select: none;
-    font-weight: 600;
-}
-
-#new-project-section button:hover {
-    background-color: #155ab6;
-}
-
 .box {
-    background: #ffffff;
-    border: 1px solid #e0e0e0;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
-    padding: 18px 22px;
+    padding: 16px 20px;
     margin-bottom: 20px;
-    box-shadow: 0 1px 3px rgb(60 64 67 / 0.15);
-    color: #202124;
-    font-size: var(--font-size-text);
-}
-
-button.green-btn {
-    background-color: #1a73e8;
-    border-radius: 6px;
-    color: white;
-    padding: 10px 18px;
-    font-weight: 600;
-    font-size: var(--font-size-button);
-    border: none;
-    cursor: pointer;
-    user-select: none;
-    transition: background-color 0.2s ease;
-}
-
-button.green-btn:hover {
-    background-color: #155ab6;
+    box-shadow: none;
 }
 
 .section-title {
-    display: flex;
-    align-items: center;
-    font-weight: 700;
+    font-weight: 600;
     font-size: var(--font-size-title);
-    color: #202124;
-    margin-bottom: 8px;
-    line-height: 1.2;
-    gap: 8px;
+    margin-bottom: 12px;
 }
 
-.section-title h3 {
-    margin: 0;
-    line-height: 1.2;
-}
-#btn-add-req {
-    margin-top: 10px;
-    padding: 8px 16px;
-    font-size: 0.95rem;
-    border-radius: 6px;
-    background-color: #1a73e8;
-    color: white;
+button, .btn-save {
+    background-color: var(--button-bg);
+    color: var(--button-text);
     border: none;
+    border-radius: 6px;
+    padding: 10px 18px;
+    font-size: var(--font-size-button);
+    font-weight: 500;
     cursor: pointer;
     transition: background-color 0.2s ease;
-    font-weight: 600;
 }
 
-#btn-add-req:hover {
-    background-color: #155ab6;
+button:hover, .btn-save:hover {
+    background-color: var(--button-hover);
 }
 
-input[type="text"], textarea, select, .gradio-radio {
+input[type="text"], textarea, select {
     background-color: #fff;
-    border: 1.5px solid #dadce0;
-    border-radius: 8px;
-    padding: 10px 14px;
+    border: 1.5px solid var(--border-color);
+    border-radius: 6px;
+    padding: 10px 12px;
     font-size: var(--font-size-text);
-    color: #202124;
     transition: border-color 0.2s ease;
 }
 
-input[type="text"]:focus, textarea:focus, select:focus {
-    border-color: #1a73e8;
+input[type="text"]:focus, textarea:focus {
+    border-color: #999;
     outline: none;
-    box-shadow: 0 0 6px rgb(26 115 232 / 0.3);
 }
 
-.gradio-radio {
-    padding: 8px 12px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    background-color: #fff;
-    color: #202124;
-    font-size: var(--font-size-text);
+.gradio-tabs .tab-nav-button {
+    background-color: transparent;
+    border: none;
+    font-weight: 500;
+    color: var(--text-muted);
+    padding: 12px 16px;
+    transition: color 0.3s ease;
+}
+
+.gradio-tabs .tab-nav-button.selected {
+    color: var(--text-color);
+    font-weight: 600;
 }
 
 #status-output, .status-output {
-    background-color: #e8f0fe;
-    border: 1px solid #d2e3fc;
-    color: #1967d2;
-    font-weight: 600;
+    background-color: #eeeeee;
+    border: 1px solid #d5d5d5;
+    color: #333;
+    font-weight: 500;
     border-radius: 8px;
-    padding: 14px;
+    padding: 12px;
+}
+
+#chat-box {
+    height: 500px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 10px;
+    background: #f9f9f9;
+}
+
+.gr-chat-message {
+    padding: 10px 14px;
+    border-radius: 12px;
+    margin: 10px 0;
+    max-width: 70%;
     font-size: var(--font-size-text);
 }
 
-#main-content {
-    flex-grow: 1;
-    background: #fff;
-    padding: 24px;
-    color: #202124;
-    font-size: var(--font-size-text);
+.gr-chat-message.user {
+    background-color: #e0e0e0;
+    align-self: flex-end;
+    text-align: right;
 }
 
-#sidebar::-webkit-scrollbar,
-#main-content::-webkit-scrollbar {
+.gr-chat-message.bot {
+    background-color: #f1f1f1;
+    align-self: flex-start;
+    text-align: left;
+}
+
+::-webkit-scrollbar {
     width: 8px;
 }
 
-#sidebar::-webkit-scrollbar-thumb,
-#main-content::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
     background-color: #c1c1c1;
     border-radius: 4px;
 }
 
-#sidebar::-webkit-scrollbar-track,
-#main-content::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
     background: #f1f1f1;
+}
+
+#req-buttons-wrapper {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-top: 16px;
+    gap: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.box #req-buttons-wrapper {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+#req-buttons-wrapper button {
+    background-color: transparent;
+    border: 1px solid #ccc;
+    color: #333;
+    padding: 10px 16px;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+#req-buttons-wrapper button:hover {
+    background-color: #efefef;
+}
+
+#status-output-project {
+    background-color: #fff;
+    color: #000;
+    opacity: 1 !important;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 10px;
 }

@@ -2,8 +2,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import UnstructuredFileLoader
 
 from rag_engine.api_service.embedding import embed_texts
-
-from .models import PDFChunk
+from rag_engine.business_visions.models import PDFChunk
 
 
 def process_pdf_and_store(file_path, django_file_obj):

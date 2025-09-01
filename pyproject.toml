@@ -9,22 +9,24 @@ description = "ReqCheck - Software Requirements Checking"
 authors = [
   {name = "Glaucia Schnoeller"},
 ]
-
 requires-python = ">=3.8"
 
 dependencies = [
   "Django>=4.2",
+  "gunicorn",
   "psycopg[binary]",
   "pgvector",
-  "python-decouple",
-  "gunicorn",
   "djangorestframework",
-  "PyPDF2",
-  "langchain",
+  "python-decouple",
+  "langchain",  # stable version
   "langchain-community",
-  "unstructured[all-docs]",
+  "langchain-huggingface",
   "sentence-transformers",
-  "langchain-huggingface"
+  "unstructured[all-docs]",  # version tested with LangChain
+  "PyPDF2",
+  "tqdm",
+  "requests",
+  "pydantic"  # to ensure compatibility with LangChain
 ]
 
 [tool.setuptools]

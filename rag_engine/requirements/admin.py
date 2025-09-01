@@ -1,5 +1,5 @@
 from django.contrib import admin
 
-from .models import Requirement
+from rag_engine.requirements.models import Requirement
 
 admin.site.register(Requirement)

@@ -1,8 +1,7 @@
 from rest_framework import serializers
 
 from rag_engine.requirements.convert_requirement import embed_requirement_text
-
-from .models import Requirement
+from rag_engine.requirements.models import Requirement
 
 
 class RequirementSerializer(serializers.ModelSerializer):

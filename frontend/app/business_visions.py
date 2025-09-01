@@ -5,6 +5,7 @@ import gradio as gr
 import requests
 
 from .config import BACKEND_URL
+from .constants import ERROR, SUCCESS, dic_icons
 
 
 def get_filename(file):
@@ -14,25 +15,29 @@ def get_filename(file):
 
 def upload_pdf(project_id: int, pdf_file: dict):
     if not project_id:
-        return "❌ Please select a project before uploading a PDF."
+        return (
+            f"{dic_icons.get(ERROR)} Please select a project before uploading a PDF.",
+            gr.update(),
+        )
 
     if pdf_file is None:
-        return "❌ No PDF file uploaded."
+        return f"{dic_icons.get(ERROR)} No PDF file uploaded.", gr.update()
 
     try:
         with open(pdf_file.name, "rb") as f:
             url = f"{BACKEND_URL}/business-visions/upload/"
             response = requests.post(url, files={"pdf": f}, data={"project": project_id})
         if response.status_code == 201:
-            return "✅ Upload successful."
+            status = f"{dic_icons.get(SUCCESS)} Upload successful."
         else:
-            return f"❌ Error: {response.text}"
+            status = f"{dic_icons.get(ERROR)} Error: {response.text}"
     except Exception as e:
-        return f"❌ Upload failed: {str(e)}"
+        status = f"{dic_icons.get(ERROR)} Upload failed: {str(e)}"
+
+    return status, update_business_visions(project_id)
 
 
 def update_business_visions(project_id=None):
-
     url = f"{BACKEND_URL}/business-visions/"
     if project_id:
         url += f"?project={project_id}"

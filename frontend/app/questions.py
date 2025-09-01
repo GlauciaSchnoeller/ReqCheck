@@ -12,3 +12,13 @@ def ask_question(question):
         return f"Error: {response.status_code}"
     except requests.exceptions.RequestException as e:
         return f"Connection error: {e}"
+
+
+def ask_question_chat(history, user_input):
+    if user_input.strip() == "":
+        return history, ""
+
+    resposta = ask_question(user_input)
+
+    history.append((user_input, resposta))
+    return history, ""

@@ -33,9 +33,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.postgres",
     "pgvector.django",
-    "requirements",
-    "business_visions",
-    "projects",
+    "rag_engine.requirements",
+    "rag_engine.business_visions",
+    "rag_engine.projects",
 ]
 
 MIDDLEWARE = [
@@ -89,3 +89,4 @@ SECURE_HSTS_PRELOAD = True
 SESSION_COOKIE_SECURE = True
 
 EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
+OLLAMA_URL = config("OLLAMA_URL")

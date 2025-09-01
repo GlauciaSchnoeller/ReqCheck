@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from rag_engine.requirements.views import (
     BatchRequirementValidationView,
     CsrfTokenView,
-    RequirementValidationView,
+    IndividualRequirementValidationView,
     RequirementViewSet,
 )
 
@@ -15,7 +15,7 @@ urlpatterns = [
     path("csrf-token/", CsrfTokenView.as_view(), name="csrf-token"),
     path(
         "requirements/validate/",
-        RequirementValidationView.as_view(),
+        IndividualRequirementValidationView.as_view(),
         name="validate-requirement",
     ),
     path(

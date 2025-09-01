@@ -18,15 +18,15 @@ dependencies = [
   "pgvector",
   "djangorestframework",
   "python-decouple",
-  "langchain",  # versão estável
+  "langchain",  # stable version
   "langchain-community",
   "langchain-huggingface",
   "sentence-transformers",
-  "unstructured[all-docs]",  # versão testada com LangChain
+  "unstructured[all-docs]",  # version tested with LangChain
   "PyPDF2",
   "tqdm",
   "requests",
-  "pydantic"  # garante compatibilidade com LangChain
+  "pydantic"  # to ensure compatibility with LangChain
 ]
 
 [tool.setuptools]

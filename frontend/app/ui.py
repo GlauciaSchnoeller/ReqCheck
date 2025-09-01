@@ -106,10 +106,10 @@ def format_validation_result(result):
         return "\n\n".join([format_validation_result(r) for r in result])
 
     return (
-        f"**Consistency:** {result.get('consistency', 'Unknown')}\n"
-        f"**Completeness:** {result.get('completeness', 'Unknown')}\n"
-        f"**Ambiguity:** {result.get('ambiguity', 'Unknown')}\n\n"
-        f"**Notes:** {result.get('notes', 'No additional notes.')}"
+        f"Consistency: {result.get('consistency')}\n"
+        f"Completeness: {result.get('completeness')}\n"
+        f"Ambiguity: {result.get('ambiguity')}\n\n"
+        f"Notes: {result.get('notes')}"
     )
 
 
@@ -150,7 +150,7 @@ def run_server():
                 with gr.Tabs():
                     with gr.Tab("📋 Requirements"):
                         with gr.Group(elem_classes="box"):
-                            gr.Markdown("### RequirementS")
+                            gr.Markdown("### Requirements")
 
                             with gr.Column(visible=False) as add_req_section:
                                 input_text = gr.Textbox(label="New Requirement", lines=3)
@@ -330,13 +330,13 @@ def run_server():
         ).then(fn=lambda: gr.update(value=None), inputs=[], outputs=[edit_field])
 
         btn_validate_req.click(
-            fn=lambda req_id, proj: format_validation_result(validate_requirement(req_id, proj)),
+            fn=lambda req_id, proj: validate_requirement(req_id, proj),
             inputs=[requirements_list, project_dropdown],
             outputs=[status_output_req],
         )
 
         btn_validate_all.click(
-            fn=lambda proj: format_validation_result(validate_all_requirements(proj)),
+            fn=lambda proj: validate_all_requirements(proj),
             inputs=[project_dropdown],
             outputs=[status_output_req],
         )

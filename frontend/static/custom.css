@@ -63,8 +63,8 @@ body, .gradio-container {
     flex-direction: column;
     font-size: var(--font-size-text);
 
-    height: 100vh;             /* 👈 altura total da janela */
-    overflow-y: auto;          /* 👈 scroll se necessário */
+    height: 100vh;
+    overflow-y: auto;
 }
 
 .sidebar-title {
@@ -216,7 +216,7 @@ input[type="text"]:focus, textarea:focus {
 }
 
 #status-output-project {
-    background-color: #fff; /* ou use: var(--card-bg) */
+    background-color: #fff;
     color: #000;
     opacity: 1 !important;
     font-weight: bold;
